@@ -10,7 +10,8 @@ stages:
 bleeding-edge:
   stage: release
   script:
-    - docker build -t chouandy/docker-base:${CI_BUILD_REF_NAME} .
+    - docker pull buildpack-deps:jessie-scm
+    - docker build --no-cache=true -t chouandy/docker-base:${CI_BUILD_REF_NAME} .
     - docker push chouandy/docker-base:${CI_BUILD_REF_NAME}
   only:
     - develop
