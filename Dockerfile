@@ -1,4 +1,6 @@
 FROM buildpack-deps:jessie-scm
 
 # Install docker
-RUN curl -sSL https://get.docker.com/ | sh
+COPY install-docker /install-docker
+RUN chmod +x /install-docker
+RUN DOCKER_VERSION=1.11.2 /install-docker
