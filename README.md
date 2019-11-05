@@ -8,3 +8,5 @@ The CI baseimage.
 - awscli
 - docker
 - docker-compose
+- go
+- glide
