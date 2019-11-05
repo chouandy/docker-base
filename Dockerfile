@@ -2,19 +2,18 @@ FROM phusion/baseimage:0.11
 LABEL maintainer=chouandy
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV DOCKER_VERSION=5:19.03.4~3-0~ubuntu-bionic
 
-# Upgrade Packages
+# Upgrade packages
 RUN apt-get update && apt-get upgrade -y -o Dpkg::Options::="--force-confold"
 
-# Install Packages
+# Install packages
 RUN apt-get update && apt-get install -y \
   build-essential \
   pkg-config \
   git \
   tzdata
 
-# # Install AWS Cli
+# # Install aws cli
 RUN apt-get install -y python-dev
 RUN curl 'https://bootstrap.pypa.io/get-pip.py' -o 'get-pip.py'
 RUN python get-pip.py
@@ -22,6 +21,8 @@ RUN pip install awscli
 RUN rm -f get-pip.py
 
 # Install Docker
+ENV DOCKER_VERSION=5:19.03.4~3-0~ubuntu-bionic
+ENV DOCKER_COMPOSE_VERSION=1.24.1
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 RUN apt-key fingerprint 0EBFCD88
 RUN add-apt-repository \
@@ -34,7 +35,7 @@ RUN apt-get update && apt-get install -y \
   containerd.io
 
 # Install docker-compose
-RUN curl -sLo /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` \
+RUN curl -sLo /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-`uname -s`-`uname -m` \
  && chmod +x /usr/local/bin/docker-compose
 
 # Install go
