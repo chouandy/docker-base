@@ -39,7 +39,7 @@ RUN curl -sLo /usr/local/bin/docker-compose https://github.com/docker/compose/re
  && chmod +x /usr/local/bin/docker-compose
 
 # Install go
-ENV GOLANG_VERSION=1.13.4
+ENV GOLANG_VERSION=1.12.13
 RUN curl -sLo go.tar.gz https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz \
  && tar -C /usr/local -xzf go.tar.gz \
  && rm go.tar.gz
