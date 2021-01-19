@@ -39,14 +39,13 @@ RUN curl -sLo /usr/local/bin/docker-compose https://github.com/docker/compose/re
  && chmod +x /usr/local/bin/docker-compose
 
 # Install go
-ENV GOLANG_VERSION=1.12.13
+ENV GOLANG_VERSION=1.15.6
 RUN curl -sLo go.tar.gz https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz \
  && tar -C /usr/local -xzf go.tar.gz \
  && rm go.tar.gz
 ENV GOPATH=/go
 ENV PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
-RUN curl https://glide.sh/get | sh
 
 # Finalize
 RUN apt-get autoremove && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
