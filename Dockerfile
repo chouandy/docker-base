@@ -1,10 +1,7 @@
-FROM phusion/baseimage:0.11
+FROM phusion/baseimage:jammy-1.0.1
 LABEL maintainer=chouandy
 
 ENV DEBIAN_FRONTEND=noninteractive
-
-# Upgrade packages
-RUN apt-get update && apt-get upgrade -y -o Dpkg::Options::="--force-confold"
 
 # Install packages
 RUN apt-get update && apt-get install -y \
@@ -13,33 +10,30 @@ RUN apt-get update && apt-get install -y \
   git \
   tzdata
 
-# # Install aws cli
-RUN apt-get install -y python-dev
-RUN curl 'https://bootstrap.pypa.io/get-pip.py' -o 'get-pip.py'
-RUN python get-pip.py
-RUN pip install awscli
+# Install aws cli
+RUN curl -O https://bootstrap.pypa.io/get-pip.py
+RUN python3 get-pip.py
+RUN pip3 install awscli
 RUN rm -f get-pip.py
 
 # Install Docker
-ENV DOCKER_VERSION=5:19.03.4~3-0~ubuntu-bionic
-ENV DOCKER_COMPOSE_VERSION=1.24.1
-RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-RUN apt-key fingerprint 0EBFCD88
-RUN add-apt-repository \
-  "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) \
-  stable"
+ENV DOCKER_VERSION=5:20.10.17~3-0~ubuntu-jammy
+RUN install -m 0755 -d /etc/apt/keyrings
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+RUN chmod a+r /etc/apt/keyrings/docker.gpg
+RUN echo \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  tee /etc/apt/sources.list.d/docker.list > /dev/null
 RUN apt-get update && apt-get install -y \
   docker-ce=$DOCKER_VERSION \
   docker-ce-cli=$DOCKER_VERSION \
-  containerd.io
-
-# Install docker-compose
-RUN curl -sLo /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-`uname -s`-`uname -m` \
- && chmod +x /usr/local/bin/docker-compose
+  containerd.io \
+  docker-buildx-plugin \
+  docker-compose-plugin
 
 # Install go
-ENV GOLANG_VERSION=1.15.6
+ENV GOLANG_VERSION=1.20.3
 RUN curl -sLo go.tar.gz https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz \
  && tar -C /usr/local -xzf go.tar.gz \
  && rm go.tar.gz

@@ -2,10 +2,13 @@
 
 The CI baseimage.
 
+## OS
+
+Ubuntu Jammy 22.04 (LTS)
+
 ## Tools
 
 - git
 - awscli
-- docker
-- docker-compose
-- go v1.15.6
+- docker v20.10.17
+- go v1.20.3
